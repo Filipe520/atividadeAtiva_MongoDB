@@ -1,0 +1,38 @@
+// Usar o banco ecommerce
+use ecommerce
+
+// Inserir clientes
+db.clientes.insertMany([
+  { _id: 1, nome: "Ana Souza", email: "ana@email.com", cidade: "Brasília" },
+  { _id: 2, nome: "Carlos Lima", email: "carlos@email.com", cidade: "São Paulo" },
+  { _id: 3, nome: "Mariana Torres", email: "mariana@email.com", cidade: "Rio" },
+  { _id: 4, nome: "João Silva", email: "joao@email.com", cidade: "São Paulo" },
+  { _id: 5, nome: "Luiza Costa", email: "luiza@email.com", cidade: "Salvador" }
+])
+// Inserir pedidos
+db.pedidos.insertMany([
+  { cliente_id: 1, produto: "Notebook", valor: 3500.00 },
+  { cliente_id: 1, produto: "Mouse", valor: 150.00 },
+  { cliente_id: 2, produto: "Celular", valor: 2500.00 },
+  { cliente_id: 3, produto: "Fone de Ouvido", valor: 200.00 },
+  { cliente_id: 4, produto: "Teclado", valor: 120.00 },
+  { cliente_id: 5, produto: "Cadeira Gamer", valor: 450.00 }
+])
+// Consultar todos os clientes
+db.clientes.find()
+// Consultar todos os pedidos
+db.pedidos.find()
+// Consultar pedidos de um cliente (exemplo: cliente 1 - Ana Souza)
+db.pedidos.find({ cliente_id: 1 })
+// Clientes da cidade de São Paulo
+db.clientes.find({ cidade: "São Paulo" })
+// Total gasto por cliente (usando aggregate)
+db.pedidos.aggregate([
+  { $group: { _id: "$cliente_id", total: { $sum: "$valor" } } }
+])
+// Cliente que mais gastou (ordenar pelo total desc e pegar o primeiro)
+db.pedidos.aggregate([
+  { $group: { _id: "$cliente_id", total: { $sum: "$valor" } } },
+  { $sort: { total: -1 } },
+  { $limit: 1 }
+])
