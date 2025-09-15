@@ -1,0 +1,63 @@
+-- Criar tabelas
+CREATE TABLE clientes (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  nome VARCHAR(100),
+  email VARCHAR(100),
+  cidade VARCHAR(50)
+);
+
+CREATE TABLE pedidos (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  cliente_id INTEGER,
+  produto VARCHAR(100),
+  valor DECIMAL(10,2),
+  FOREIGN KEY (cliente_id) REFERENCES clientes(id)
+);
+
+-- Inserir alguns clientes
+INSERT INTO clientes (nome, email, cidade) VALUES
+('Ana Souza', 'ana@email.com', 'Brasília'),
+('Carlos Lima', 'carlos@email.com', 'São Paulo'),
+('Mariana Torres', 'mariana@email.com', 'Rio');
+
+-- Inserir alguns pedidos
+INSERT INTO pedidos (cliente_id, produto, valor) VALUES
+(1, 'Notebook', 3500.00),
+(1, 'Mouse', 150.00),
+(2, 'Celular', 2500.00),
+(3, 'Fone de Ouvido', 200.00);
+
+-- Adicionar mais clientes
+INSERT INTO clientes (nome, email, cidade) VALUES
+('João Silva', 'joao@email.com', 'São Paulo'),
+('Luiza Costa', 'luiza@email.com', 'Salvador');
+
+-- Adicionar mais pedidos
+INSERT INTO pedidos (cliente_id, produto, valor) VALUES
+(4, 'Teclado', 120.00),
+(5, 'Cadeira Gamer', 450.00);
+
+-- Consultar todos os clientes
+SELECT * FROM clientes;
+
+-- Consultar pedidos com nomes dos clientes
+SELECT pedidos.id, clientes.nome, pedidos.produto, pedidos.valor
+FROM pedidos
+JOIN clientes ON pedidos.cliente_id = clientes.id;
+
+-- Ver total gasto por cliente
+SELECT clientes.nome, SUM(pedidos.valor) AS total
+FROM pedidos
+JOIN clientes ON pedidos.cliente_id = clientes.id
+GROUP BY clientes.nome;
+
+-- Ver clientes da cidade de São Paulo
+SELECT * FROM clientes WHERE cidade = 'São Paulo';
+
+-- Ver o cliente que mais gastou
+SELECT clientes.nome, SUM(pedidos.valor) AS total
+FROM pedidos
+JOIN clientes ON pedidos.cliente_id = clientes.id
+GROUP BY clientes.nome
+ORDER BY total DESC
+LIMIT 1;
